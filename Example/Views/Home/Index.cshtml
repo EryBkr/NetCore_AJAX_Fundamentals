@@ -1,0 +1,113 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+
+        <div class="p-2">
+            <h4 class="text-center">Bir Kullanici Getir</h4>
+            <input type="text" id="kullaniciId" class="form-control" />
+            <button type="button" id="kullaniciGetir" class="btn btn-success">Get User</button>
+            <button type="button" id="kullanicilariGetir" class="btn btn-info">Get Users</button>
+        </div>
+        <div class="p-2" id="birKullanici">
+            <div style="display:none!important;" class="spinner-border" role="status">
+                @*Başta görünmemesini sağlıyoruz*@
+                <span class="sr-only">Loading...</span>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <h4 class="text-center">Hepsini Getir</h4>
+        <div class="p-2">
+            <div id="spinner" style="display:none!important;" class="spinner-border" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>
+            <table id="kullanicilar" class="table table-hover table-sm">
+            </table>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <h4 class="text-center">Kullanıcı Ekle</h4>
+        <div class="p-2">
+            <input type="text" class="form-control" id="userId" name="name" value="" />
+            <input type="text" class="form-control" id="kullaniciName" name="name" value="" />
+            <button type="button" id="kullaniciEkle" class="btn btn-info">Add User</button>
+        </div>
+    </div>
+</div>
+
+@section Javascript{  @*//Layout tarafında Jquery kütüphanesinin altına yerleştirdik*@
+    <script>  
+       
+
+        $(document).ready(function () {
+            //GET ISLEMLERI
+            $("#kullaniciGetir").click(I => {
+                let userId = $("#kullaniciId").val();
+                $.ajax({
+                    contentType: "application/json",
+                    dataType: "json",
+                    type: "GET",
+                    url: "/Home/GetByIdUser",
+                    data: { id: userId },
+                    beforeSend: function () {
+                        $("#birKullanici .spinner-border").show();
+                    },
+                    success: function (data) {
+                        $("#birKullanici .spinner-border").hide();
+                        var myData = JSON.parse(data);
+                        let htmlString = `<table class="table table-hover table-sm"> <tr> <th>Kullanıcı Id</th> <td>${myData.Id}</td> </tr> <tr> <th>Kullanıcı Ad</th> <td>${myData.Name}</td> </tr> </table>`;
+                        $("#birKullanici").html(htmlString);
+                    }
+
+                });
+            });
+
+            $("#kullanicilariGetir").click(I => {
+                $.ajax({
+                    contentType: "application/json",
+                    dataType: "json",
+                    type: "GET",
+                    url: "/Home/ListUser",
+                    beforeSend: function () {
+                        $("#spinner").show();
+                    },
+                    success: function (data) {
+                        $("#spinner").hide();
+                        $("#kullanicilar").html("");
+                        var myData = JSON.parse(data);
+                        for (var i = 0; i < myData.length; i++) {
+                            $("#kullanicilar").append(` <tr> <th>Kullanıcı Id</th> <td>${myData[i].Id}</td> </tr> <tr> <th>Kullanıcı Ad</th> <td>${myData[i].Name}</td> </tr> `);
+                        }
+                    }
+
+                });
+            });
+               //POST ISLEMLERI
+            $("#kullaniciEkle").click(I => {
+                let kullanici = {
+                    Name: $("#kullaniciName").val(),
+                    Id: $("#userId").val(),
+                };
+                console.log(kullanici.Id);
+                $.ajax({
+                    type: "POST",
+                    url: "/Home/AddUser",
+                    data: kullanici,
+                    success: function (data) {
+                        
+                        $("#kullanicilariGetir").click();
+                    }
+                });
+            });
+            
+        });
+    </script>
+}

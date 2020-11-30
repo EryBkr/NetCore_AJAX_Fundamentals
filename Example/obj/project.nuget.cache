@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "h/9wFP3vYkUJdsML9qNGCAQLp8bEnUR5xjaqP0sgCwA6uEnvrK2g26bMOAV3QN++p1F7JYV8usULIm8C9xWhyQ==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\Blackerback\\OneDrive\\Masaüstü\\AJAX_Example\\Example\\Example.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Blackerback\\.nuget\\packages\\newtonsoft.json\\12.0.3\\newtonsoft.json.12.0.3.nupkg.sha512"
+  ],
+  "logs": []
+}
